@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Лабиринт</title>
+    <style>
+        body { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; background: #f4f4f9; overflow: hidden; }
+        .status { margin-bottom: 15px; font-weight: bold; text-align: center; min-height: 24px; }
+        #maze { 
+            position: relative; width: 320px; height: 320px; 
+            background: #ffcfcf; border: 4px solid #333; border-radius: 10px;
+        }
+        .path { position: absolute; background: white; }
+        #start { top: 20px; left: 0; width: 80px; height: 40px; background: #4dabf7; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; }
+        #p1 { top: 20px; left: 80px; width: 180px; height: 40px; }
+        #p2 { top: 20px; left: 220px; width: 40px; height: 200px; }
+        #p3 { top: 180px; left: 60px; width: 200px; height: 40px; }
+        #finish { top: 180px; left: 20px; width: 50px; height: 40px; background: #51cf66; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="status" id="msg">Наведи на СИНТЮЮ зону "СТАРТ"</div>
+<div id="maze">
+    <div class="path" id="start">СТАРТ</div>
+    <div class="path" id="p1"></div>
+    <div class="path" id="p2"></div>
+    <div class="path" id="p3"></div>
+    <div class="path" id="finish">ФИНИШ</div>
+</div>
+
+<script>
+    const maze = document.getElementById('maze');
+    const msg = document.getElementById('msg');
+    let active = false;
+
+    document.getElementById('start').onmouseenter = () => {
+        active = true;
+        msg.innerText = "Вези по белой дорожке...";
+        msg.style.color = "black";
+    };
+
+    maze.onmouseenter = (e) => {
+        if (e.target === maze && active) {
+            active = false;
+            msg.innerText = "Ошибка! Вернись на Старт.";
+            msg.style.color = "red";
+        }
+    };
+
+    document.getElementById('finish').onmouseenter = () => {
+        if (active) {
+            active = false;
+            msg.innerText = "🎉 Упражнение пройдено!";
+            msg.style.color = "green";
+        }
+    };
+</script>
+</body>
+</html>
