@@ -6,22 +6,23 @@
     <title>Тренажер: Лабиринт</title>
     <style>
         body { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; background: #f4f4f9; overflow: hidden; }
-        .status { margin-bottom: 15px; font-weight: bold; text-align: center; min-height: 24px; }
+        .status { margin-bottom: 15px; font-weight: bold; text-align: center; height: 30px; font-size: 20px; }
         #maze { 
             position: relative; width: 320px; height: 320px; 
-            background: #ffcfcf; border: 4px solid #333; border-radius: 10px;
+            background: #ffcfcf; /* Красная зона (стена) */
+            border: 4px solid #333; border-radius: 10px;
         }
         .path { position: absolute; background: white; }
-        #start { top: 20px; left: 0; width: 80px; height: 40px; background: #4dabf7; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; }
+        #start { top: 20px; left: 0; width: 80px; height: 40px; background: #4dabf7; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; z-index: 2; }
         #p1 { top: 20px; left: 80px; width: 180px; height: 40px; }
         #p2 { top: 20px; left: 220px; width: 40px; height: 200px; }
         #p3 { top: 180px; left: 60px; width: 200px; height: 40px; }
-        #finish { top: 180px; left: 20px; width: 50px; height: 40px; background: #51cf66; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+        #finish { top: 180px; left: 20px; width: 50px; height: 40px; background: #51cf66; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; z-index: 2; }
     </style>
 </head>
 <body>
 
-<div class="status" id="msg">Наведи на СИНТЮЮ зону "СТАРТ"</div>
+<div class="status" id="msg">Наведи на СТАРТ</div>
 <div id="maze">
     <div class="path" id="start">СТАРТ</div>
     <div class="path" id="p1"></div>
@@ -31,31 +32,40 @@
 </div>
 
 <script>
-    const maze = document.getElementById('maze');
     const msg = document.getElementById('msg');
     let active = false;
 
+    // Начало игры
     document.getElementById('start').onmouseenter = () => {
         active = true;
-        msg.innerText = "Вези по белой дорожке...";
+        msg.innerText = "Игра пошла! Не сойди с дорожки!";
         msg.style.color = "black";
     };
 
-    maze.onmouseenter = (e) => {
-        if (e.target === maze && active) {
+    // ГЛАВНОЕ ИЗМЕНЕНИЕ: проверяем, куда наведен курсор
+    document.addEventListener('mouseover', (e) => {
+        if (!active) return;
+
+        // Если курсор НЕ на дорожке (классы 'path') и НЕ на старте/финише
+        if (!e.target.classList.contains('path') && e.target.id !== 'maze') {
+             // игнорируем элементы вне лабиринта
+        } else if (e.target.id === 'maze') {
+            // Если попал на фон лабиринта (красный) — проигрыш
             active = false;
             msg.innerText = "Ошибка! Вернись на Старт.";
             msg.style.color = "red";
         }
-    };
+    });
 
+    // Победа
     document.getElementById('finish').onmouseenter = () => {
         if (active) {
             active = false;
-            msg.innerText = "🎉 Упражнение пройдено!";
+            msg.innerText = "🎉 Победа! Пройдено.";
             msg.style.color = "green";
         }
     };
 </script>
 </body>
 </html>
+
